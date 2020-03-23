@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+* @Copyright(C) 2013- Gkasios
+* @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
+-->
+    <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+    	<rule>
+       		<name>Disable .reload</name>
+        		<from>^/.reload</from>
+        		<set type="status">403</set>
+       		 <to>null</to>
+    	</rule>	
+	<rule>
+		<name>Disable Directory WEB-INF</name>
+		<from>^/WEB-INF/.*$</from>
+		<set type="status">403</set>
+		<to>null</to>
+	</rule>
+
+	<rule>
+		<name>Only GET/POST/HEAD</name>
+		<condition type="method" operator='notequal'>GET</condition>
+		<condition type="method" operator='notequal'>POST</condition>
+		<condition type="method" operator='notequal'>HEAD</condition>
+		<from>.*</from>
+		<set type='response-header' name='Allow'>GET,POST,HEAD</set>
+ 		<set type="status">405</set>
+		<to>null</to>
+	</rule>
+
+    	<rule>
+        		<name>Disable Directory java</name>
+        		<from>^/java/.*$</from>
+       		 <set type="status">403</set>
+        		<to>null</to>
+   	 </rule>
+
+   	 <rule>
+        		<name>Disable Directory .htaccess</name>
+        		<from>^/.htaccess</from>
+        		<set type="status">403</set>
+       		 <to>null</to>
+    	</rule>		
+	<rule>
+		<from>^/$</from>
+		<to>index.php?route=common/home</to>
+	</rule>	
+	<rule>
+		<from>^/sitemap.xml$</from>
+		<to>index.php?route=feed/google_sitemap</to>
+	</rule>
+	<rule>
+		<from>^/googlebase.xml$</from>
+		<to>index.php?route=feed/google_base</to>
+	</rule>
+	<rule match-type="regex">
+		<condition type="request-uri" operator="notequal">^/admin/(.*)$</condition>
+		<condition type="request-uri" operator="notequal">^/(.*)(ico|gif|jpg|jpeg|png|js|css)$</condition>
+		<condition type="parameter" name="route" operator="notequal"></condition>
+		<condition type="method" name="POST" operator="notequal">POST</condition>
+		<from>^/([a-zA-Z-_/0-9]+)$</from>
+		<to qsappend="true">/index.php?_route_=$1</to>
+	</rule>
+</urlrewrite>
